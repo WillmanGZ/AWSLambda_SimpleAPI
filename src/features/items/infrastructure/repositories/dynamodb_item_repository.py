@@ -43,6 +43,18 @@ class DynamoItemRepository(ItemRepositoryPort):
 
         return item
 
+    def update(self, item: Item) -> Item | None:
+        try:
+            self.table.put_item(
+                Item=ItemMapper.to_dynamo(item),
+                ConditionExpression="attribute_exists(id)"
+            )
+            return item
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "ConditionalCheckFailedException":
+                return None
+            raise RuntimeError(e.response["Error"]["Message"])
+
 
     def delete(self, item_id: str) -> bool:
         try:

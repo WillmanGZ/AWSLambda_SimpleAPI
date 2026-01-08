@@ -5,7 +5,19 @@ from features.items.infrastructure.repositories.dynamodb_item_repository import 
 
 
 def handler(event, context):
-    item_id = event["pathParameters"]["id"]
+    try:
+        item_id = event["pathParameters"]["id"]
+
+        if not item_id:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"message": "Item id must be provided"})
+            }
+    except:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"message": "Item id must be provided"})
+        }
 
     repo = DynamoItemRepository()
     use_case = DeleteItemUseCase(repo)
@@ -19,6 +31,6 @@ def handler(event, context):
         }
 
     return {
-        "statusCode": 204,
-        "body": ""
+        "statusCode": 200,
+        "body": json.dumps({"message": "Item deleted successfully"})
     }

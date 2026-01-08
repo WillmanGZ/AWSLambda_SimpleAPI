@@ -31,6 +31,12 @@ Resources:
                 type: aws_proxy
                 uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetItemById.Arn}/invocations
               responses: {}
+            put:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UpdateItem.Arn}/invocations
+              responses: {}
             delete:
               x-amazon-apigateway-integration:
                 httpMethod: POST
@@ -173,3 +179,33 @@ Resources:
           KeyType: HASH
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
+  UpdateItem:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: !Sub
+        - Stack ${AWS::StackName} Function ${ResourceName}
+        - ResourceName: UpdateItem
+      CodeUri: src/
+      Handler: features.items.presentation.update_handler.handler
+      Runtime: python3.13
+      MemorySize: 3008
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Items
+      Environment:
+        Variables:
+          ITEMS_TABLE: !Ref Items
+      Events:
+        ApiPUTitemsid:
+          Type: Api
+          Properties:
+            Path: /items/{id}
+            Method: PUT
+            RestApiId: !Ref Api
+  UpdateItemLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${UpdateItem}

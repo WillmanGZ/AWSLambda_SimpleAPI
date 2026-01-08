@@ -1,8 +1,6 @@
 import json
-from features.items.application.use_cases.get_item_by_id_use_case import GetItemByIdUseCase
+from features.items.application.use_cases.update_item_use_case import UpdateItemUseCase
 from features.items.infrastructure.repositories.dynamodb_item_repository import DynamoItemRepository
-from features.items.infrastructure.mappers.item_mapper import ItemMapper
-
 
 def handler(event, context):
     try:
@@ -19,10 +17,25 @@ def handler(event, context):
             "body": json.dumps({"message": "Item id must be provided"})
         }
 
-    repo = DynamoItemRepository()
-    use_case = GetItemByIdUseCase(repo)
+    try:
+        body = json.loads(event["body"])
+        name = body.get("name")
 
-    item = use_case.execute(item_id)
+        if not body or not name:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"message": "Name is required"})
+            }
+    except:
+        return {
+                "statusCode": 400,
+                "body": json.dumps({"message": "Name is required"})
+            }
+
+    repo = DynamoItemRepository()
+    use_case = UpdateItemUseCase(repo)
+
+    item = use_case.execute(item_id, name)
 
     if item is None:
         return {

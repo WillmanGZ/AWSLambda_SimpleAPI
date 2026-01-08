@@ -4,14 +4,20 @@ from features.items.infrastructure.repositories.dynamodb_item_repository import 
 
 
 def handler(event, context):
-    body = json.loads(event["body"])
+    try:
+        body = json.loads(event["body"])
+        name = body.get("name")
 
-    name = body.get("name")
-    if not name:
+        if not body or not name:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"message": "Name is required"})
+            }
+    except:
         return {
-            "statusCode": 400,
-            "body": json.dumps({"message": "name is required"})
-        }
+                "statusCode": 400,
+                "body": json.dumps({"message": "Name is required"})
+            }
 
     repo = DynamoItemRepository()
     use_case = CreateItemUseCase(repo)
