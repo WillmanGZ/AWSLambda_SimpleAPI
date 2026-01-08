@@ -1,6 +1,6 @@
-from domain.ports.in_ports.delete_item_port import DeleteItemPort
-from domain.ports.out_ports.item_repository_port import ItemRepositoryPort
-from domain.exceptions.item_not_found_exception import ItemNotFoundError
+from features.items.domain.ports.in_ports.delete_item_port import DeleteItemPort
+from features.items.domain.ports.out_ports.item_repository_port import ItemRepositoryPort
+from features.items.domain.exceptions.item_not_found_exception import ItemNotFoundError
 
 class DeleteItemUseCase(DeleteItemPort):
     def __init__(self, repo: ItemRepositoryPort):

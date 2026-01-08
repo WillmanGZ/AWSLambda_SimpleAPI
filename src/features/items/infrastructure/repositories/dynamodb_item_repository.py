@@ -2,9 +2,9 @@ import os
 import boto3
 from botocore.exceptions import ClientError
 
-from domain.entities.item import Item
-from domain.ports.out_ports.item_repository_port import ItemRepositoryPort
-from infrastructure.mappers.item_mapper import ItemMapper
+from features.items.domain.entities.item import Item
+from features.items.domain.ports.out_ports.item_repository_port import ItemRepositoryPort
+from features.items.infrastructure.mappers.item_mapper import ItemMapper
 from typing import List
 
 

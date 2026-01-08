@@ -1,5 +1,5 @@
 from typing import Protocol, List
-from domain.entities.item import Item
+from features.items.domain.entities.item import Item
 
 class ItemRepositoryPort(Protocol):
     def get_all(self) -> List[Item]: ...

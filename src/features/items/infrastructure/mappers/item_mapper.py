@@ -1,4 +1,4 @@
-from domain.entities.item import Item
+from features.items.domain.entities.item import Item
 
 
 class ItemMapper:
